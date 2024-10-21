@@ -24,7 +24,7 @@ namespace WebApi.Controllers
             return Ok();
         }
         [HttpPost("register")]
-        public async Task<IActionResult> Register(User model)
+        public async Task<IActionResult> Register(UserModel model)
         {
             await _userManager.CreateAsync(model);
 
