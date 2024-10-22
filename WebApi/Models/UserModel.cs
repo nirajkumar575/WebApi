@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace WebApi.Models
 {
-    public class UserModel:IdentityUser
+    public class UserModel
     {
+        [Key]
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
     }
