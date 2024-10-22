@@ -7,14 +7,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using WebApi.Models;
 
-public class JwtToken :IJwtToken
+public class GenerateJwtToken :IGenerateJwtToken
 {
     private readonly IConfiguration _configuration=null;
-    public JwtToken(IConfiguration configuration)
+    public GenerateJwtToken(IConfiguration configuration)
     {
         this._configuration=configuration;
     }
-    public string GenerateJwtToken(LoginModel user)
+    public string GeneratejwtToken(LoginModel user)
     {
     
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

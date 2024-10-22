@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using WebApi.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace WebApi.Controllers
 {
@@ -14,12 +16,12 @@ namespace WebApi.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly IJwtToken _jwtToken=null;
+        private readonly IGenerateJwtToken _generateJwtToken = null;
         
-        public AccountController(UserManager<IdentityUser> userManager, IJwtToken jwtToken)
+        public AccountController(UserManager<IdentityUser> userManager, IGenerateJwtToken generateJwtToken)
         {
             _userManager = userManager;
-            _jwtToken=jwtToken;
+            _generateJwtToken = generateJwtToken;
         }
         [HttpGet]
         public IActionResult Index()
@@ -35,13 +37,13 @@ namespace WebApi.Controllers
         }
         [AllowAnonymous]
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginModel login)
+        public IActionResult LoginByJwt([FromBody] LoginModel login)
         {
             var user = AuthenticateUser(login);
 
             if (user != null)
             {
-                var token = _jwtToken.GenerateJwtToken(login);
+                var token = _generateJwtToken.GeneratejwtToken(login);
                 return Ok(new { token });
             }
 
@@ -56,6 +58,19 @@ namespace WebApi.Controllers
             }
 
             return null;
+        }
+        [HttpGet]
+        public IActionResult LoginByOAuth(string returnUrl = "/")
+        {
+            var properties = new AuthenticationProperties { RedirectUri = returnUrl };
+            return Challenge(properties, "Google");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LogoutByOAuth()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
         }
 
     }
