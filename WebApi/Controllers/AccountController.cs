@@ -33,10 +33,10 @@ namespace WebApi.Controllers
         {
             await _userManager.CreateAsync(model);
 
-            return Ok(new {status="success",message="User Inserted Successfully !!" });
+            return Ok(new {status="success",model.UserName,message="inserted Successfully !!" });
         }
-        [AllowAnonymous]
-        [HttpPost("login")]
+        //[AllowAnonymous]
+        [HttpPost("loginbyjwt")]
         public IActionResult LoginByJwt([FromBody] LoginModel login)
         {
             var user = AuthenticateUser(login);
@@ -59,7 +59,7 @@ namespace WebApi.Controllers
 
             return null;
         }
-        [HttpGet]
+        [HttpGet("loginbyoauth")]
         public IActionResult LoginByOAuth(string returnUrl = "/")
         {
             var properties = new AuthenticationProperties { RedirectUri = returnUrl };
