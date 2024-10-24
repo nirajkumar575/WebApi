@@ -34,8 +34,16 @@ namespace WebApi
             services.AddScoped<IGenerateJwtToken,GenerateJwtToken>();
             services.AddScoped<IUser, User>();
             services.AddScoped<IEmployee, Employee>();
+            services.AddSingleton<FileService>();
             
-            services.AddControllers();
+            services.AddControllers(config =>
+            {
+                config.Filters.Add(new CustomAuthorizationFilter());
+                config.Filters.Add(new CustomResourceFilter());
+                config.Filters.Add(new CustomActionFilter());
+                config.Filters.Add(new CustomResultFilter());
+                //config.Filters.Add(new CustomExceptionFilter)
+            });
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders(); //Identity Framework
 
