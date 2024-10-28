@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApi.Controllers
 {
+    [ServiceFilter(typeof(CustomResultFilter))]
     public class HomeController : Controller
     {
         public IActionResult Index()

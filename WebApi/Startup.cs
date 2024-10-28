@@ -13,6 +13,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using System;
 
 
 namespace WebApi
@@ -35,13 +37,19 @@ namespace WebApi
             services.AddScoped<IUser, User>();
             services.AddScoped<IEmployee, Employee>();
             services.AddSingleton<FileService>();
+
+            services.AddScoped<CustomAuthorizationFilter>(); // We want to apply this filter on specific action or controller
+            services.AddScoped<CustomResourceFilter>(); // Register the filter as a service        
+            services.AddScoped<CustomAsyncActionFilter>();
+            services.AddScoped<CustomExceptionFilter>();
+            services.AddScoped<CustomResultFilter>();
             
             services.AddControllers(config =>
             {
-                config.Filters.Add(new CustomAuthorizationFilter());
-                config.Filters.Add(new CustomResourceFilter());
-                config.Filters.Add(new CustomActionFilter());
-                config.Filters.Add(new CustomResultFilter());
+                // config.Filters.Add(new CustomAuthorizationFilter());
+                // config.Filters.Add(new CustomResourceFilter());
+                // config.Filters.AddService<CustomAsyncActionFilter>(); // Register the custom filter globally
+                // config.Filters.Add(new CustomResultFilter());
                 //config.Filters.Add(new CustomExceptionFilter)
             });
 
@@ -93,6 +101,13 @@ namespace WebApi
         {
             if (env.IsDevelopment())
             {
+                // app.Use(async(context, next) =>
+                // {
+                //     Console.WriteLine("Before request");
+                //     await next();
+                //     Console.WriteLine("After request");
+                // });
+                //app.Run(async context => await context.Response.WriteAsync("Run Delegate"));
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));

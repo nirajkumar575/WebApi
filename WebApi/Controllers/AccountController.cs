@@ -11,8 +11,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace WebApi.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]   
+    [ServiceFilter(typeof(CustomAsyncActionFilter))]
     public class AccountController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;

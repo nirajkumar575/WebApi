@@ -11,5 +11,9 @@ public class CustomAuthorizationFilter : Attribute, IAuthorizationFilter
         {
             context.Result = new StatusCodeResult(StatusCodes.Status403Forbidden);
         }
+        else if (!context.HttpContext.User.Identity.IsAuthenticated)
+        {
+            context.Result = new UnauthorizedResult();
+        }
     }
 }
